@@ -41,7 +41,6 @@ class PriceTracker:
 
     def get_price(self, url, selector=None, thousand_separator=","):
         """Get the price of a product from a given URL"""
-
         try:
             headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
@@ -106,25 +105,57 @@ class PriceTracker:
             if product["url"] == url:
                 return False
 
-        actual_price = self.get_price(url, selector, thousand_separator)
+        current_price = self.get_price(url, selector, thousand_separator)
 
         # Check if the price could be obtained
-        if actual_price is None:
+        if current_price is None:
             return False
 
         date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        products.append({
-            "name": name,
-            "url": url,
-            "desired_price": desired_price,
-            "actual_price": actual_price,
-            "selector": selector,
-            "thousand_separator": thousand_separator,
-            "created_at": date,
-            "price_history": [{
-              "date": date,
-              "price": actual_price
-            }],
-        })
+        products.append(
+            {
+                "name": name,
+                "url": url,
+                "desired_price": desired_price,
+                "current_price": current_price,
+                "selector": selector,
+                "thousand_separator": thousand_separator,
+                "created_at": date,
+                "price_history": [{"date": date, "price": current_price}],
+            }
+        )
 
         self.save_tracked_products(products)
+
+        return True
+
+    def update_prices(self):
+        """Update tracked products"""
+        products = self.load_tracked_products()
+        updated_products = []
+
+        for product in products:
+            thousand_separator = product.get("thousand_separator", ",")
+            current_price = self.get_price(
+                product["url"], product.get("selector"), thousand_separator
+            )
+
+            if current_price is not None:
+                product["current_price"] = current_price
+
+                # add to history
+                product["price_history"].append(
+                    {
+                        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        "precio": current_price,
+                    }
+                )
+
+                # verify if price is equal or low than desired price
+                if current_price <= product["desired_price"]:
+                    updated_products.append(product)
+
+        self.save_tracked_products(updated_products)
+        return updated_products
+
+    # TODO: delete product
