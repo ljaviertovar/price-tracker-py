@@ -158,4 +158,15 @@ class PriceTracker:
         self.save_tracked_products(updated_products)
         return updated_products
 
-    # TODO: delete product
+
+    def delete_products(self, index):
+        """Delete products from traked_products"""
+        products = self.load_tracked_products()
+
+        if not products or index < 1 or index > len(products):
+            return False
+
+        products.pop(index -1 )
+        self.save_tracked_products(products)
+
+        return True
