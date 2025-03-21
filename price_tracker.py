@@ -10,7 +10,7 @@ class PriceTracker:
     def __init__(self, tracked_products="tracked_products.json"):
         self.tracked_products = tracked_products
 
-    common_prices_selectors = [
+    common_price_selectors = [
         ".price",
         ".product-price",
         ".offer-price",
@@ -58,7 +58,7 @@ class PriceTracker:
             if selector:
                 price_el = soup.select_one(selector)
             else:
-                for selector in self.common_prices_selectors:
+                for selector in self.common_price_selectors:
                     price_el = soup.select_one(selector)
                     if price_el:
                         break
