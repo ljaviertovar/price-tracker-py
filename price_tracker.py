@@ -1,8 +1,8 @@
 import os
 import json
-import requests
 import re
 from datetime import datetime
+import requests
 from bs4 import BeautifulSoup
 
 
@@ -43,23 +43,23 @@ class PriceTracker:
         """Get the price of a product from a given URL"""
         try:
             headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
-                "acept-language": "en-US,en;q=0.5",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+                "Accept-Language": "en-US,en;q=0.9,es;q=0.8",
             }
 
-            response = requests.get(url, headers=headers, timeout=10)
+            response = requests.get(url, headers=headers)
 
-            if response != 200:
+            if response.status_code != 200:
                 return None
 
-            soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "lxml")
 
             price_el = None
             if selector:
                 price_el = soup.select_one(selector)
             else:
-                for selector in self.common_price_selectors:
-                    price_el = soup.select_one(selector)
+                for default_selector in self.common_price_selectors:
+                    price_el = soup.select_one(default_selector)
                     if price_el:
                         break
 
@@ -98,36 +98,40 @@ class PriceTracker:
         self, name, url, desired_price, selector=None, thousand_separator=","
     ):
         """Add a product to the tracked products"""
-        products = self.load_tracked_products()
+        try:
+            products = self.load_tracked_products()
 
-        # Check if the product is already being tracked
-        for product in products:
-            if product["url"] == url:
+            # Check if the product is already being tracked
+            for product in products:
+                if product["url"] == url:
+                    return False
+
+            current_price = self.get_price(url, selector, thousand_separator)
+
+            # Check if the price could be obtained
+            if current_price is None:
                 return False
 
-        current_price = self.get_price(url, selector, thousand_separator)
+            date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            products.append(
+                {
+                    "name": name,
+                    "url": url,
+                    "desired_price": desired_price,
+                    "current_price": current_price,
+                    "selector": selector,
+                    "thousand_separator": thousand_separator,
+                    "created_at": date,
+                    "price_history": [{"date": date, "price": current_price}],
+                }
+            )
 
-        # Check if the price could be obtained
-        if current_price is None:
+            self.save_tracked_products(products)
+
+            return True
+        except Exception as e:
+            print(f"Error adding product: {e}")
             return False
-
-        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        products.append(
-            {
-                "name": name,
-                "url": url,
-                "desired_price": desired_price,
-                "current_price": current_price,
-                "selector": selector,
-                "thousand_separator": thousand_separator,
-                "created_at": date,
-                "price_history": [{"date": date, "price": current_price}],
-            }
-        )
-
-        self.save_tracked_products(products)
-
-        return True
 
     def update_prices(self):
         """Update tracked products"""
@@ -158,7 +162,6 @@ class PriceTracker:
         self.save_tracked_products(updated_products)
         return updated_products
 
-
     def delete_products(self, index):
         """Delete products from traked_products"""
         products = self.load_tracked_products()
@@ -166,7 +169,7 @@ class PriceTracker:
         if not products or index < 1 or index > len(products):
             return False
 
-        products.pop(index -1 )
+        products.pop(index - 1)
         self.save_tracked_products(products)
 
         return True
