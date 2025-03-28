@@ -86,8 +86,6 @@ def main():
         option = input_message("\nChoose an option: ")
 
         if option == "1":
-            print("Adding product...")
-
             name = input_message("Product name: ")
             url = input_message("Product URL: ")
             while not is_valid_url(url):
@@ -136,12 +134,12 @@ def main():
             updated_prices = tracker.update_prices()
             if updated_prices:
                 log_message(
-                    f"\n{len(updated_prices)} products have reached the desired price!",
+                    f"\n{len(updated_prices)} product(s) have reached the desired price! :D",
                     "success",
                 )
                 for product in updated_prices:
                     print(
-                        f"- {product['name']} - Current price: {product['current_price']}"
+                        f"- PRODUCT: {product['name']} - NEW CURRENT PRICE: {product['current_price']}"
                     )
             else:
                 log_message("\nNo products have reached the disired price.", "warning")

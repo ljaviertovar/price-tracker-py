@@ -45,14 +45,22 @@ class PriceTracker:
             headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
                 "Accept-Language": "en-US,en;q=0.9,es;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Accept": (
+                    "text/html,application/xhtml+xml,application/xml;q=0.9,"
+                    "image/avif,image/webp,*/*;q=0.8"
+                ),
+                "Referer": "https://www.google.com/",
             }
 
             response = requests.get(url, headers=headers)
+            # print("Response status: ", response.status_code)
 
             if response.status_code != 200:
                 return None
 
             soup = BeautifulSoup(response.text, "lxml")
+            # print("Soup: ", soup)
 
             price_el = None
             if selector:
@@ -63,6 +71,7 @@ class PriceTracker:
                     if price_el:
                         break
 
+            # print("Price element: ", price_el)
             if not price_el:
                 return None
 
@@ -98,15 +107,18 @@ class PriceTracker:
         self, name, url, desired_price, selector=None, thousand_separator=","
     ):
         """Add a product to the tracked products"""
+        print("Adding product...")
         try:
             products = self.load_tracked_products()
 
             # Check if the product is already being tracked
             for product in products:
                 if product["url"] == url:
+                    print(f"already exists: {product}")
                     return False
 
             current_price = self.get_price(url, selector, thousand_separator)
+            print("current price", current_price)
 
             # Check if the price could be obtained
             if current_price is None:
@@ -151,7 +163,7 @@ class PriceTracker:
                 product["price_history"].append(
                     {
                         "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        "precio": current_price,
+                        "price": current_price,
                     }
                 )
 
@@ -159,7 +171,9 @@ class PriceTracker:
                 if current_price <= product["desired_price"]:
                     updated_products.append(product)
 
-        self.save_tracked_products(updated_products)
+        if len(updated_products) > 0:
+            self.save_tracked_products(products)
+
         return updated_products
 
     def delete_products(self, index):
