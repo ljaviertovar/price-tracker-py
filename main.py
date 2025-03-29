@@ -1,71 +1,6 @@
-from termcolor import colored
-import re
 from price_tracker import PriceTracker
-
-
-def log_message(message, level):
-    if level == "info":
-        # Print informational message in blue
-        print(colored(message, "light_blue"))
-    elif level == "warning":
-        # Print warning message in yellow
-        print(colored(message, "yellow"))
-    elif level == "error":
-        # Print error message in red
-        print(colored(message, "red"))
-    elif level == "success":
-        # Print success message in green
-        print(colored(message, "green"))
-
-
-def input_message(message):
-    return input(colored(message, "light_blue"))
-
-
-def show_products(tracker):
-    products = tracker.load_tracked_products()
-
-    if not products:
-        log_message("\nThere is not products yet. Save one!", "warning")
-        return
-
-    print(f"\n=== TRACKED PRODUCTS ({len(products)}) ===")
-
-    for i, product in enumerate(products, 1):
-        print(f"\n{i}. NAME: {product['name']}")
-        print(f"   URL: {product['url']}")
-        print(f"   CURRENT PRICE: {product.get('current_price', 'Not avilable')}")
-        print(f"   DESIRED PRICE: {product['desired_price']}")
-
-        # show history
-        if product.get("price_history"):
-            print("   PRICE HISTORY:")
-            for register in product["price_history"][-3:]:
-                print(f"    {register['date']}: {register['price']}")
-
-
-def is_valid_url(url):
-    # Regular expression for validating a URL
-    regex = re.compile(
-        r"^(?:http|ftp)s?://"  # http:// or https://
-        r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|"  # domain...
-        r"localhost|"  # localhost...
-        r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|"  # ...or ipv4
-        r"\[?[A-F0-9]*:[A-F0-9:]+\]?)"  # ...or ipv6
-        r"(?::\d+)?"  # optional port
-        r"(?:/?|[/?]\S+)$",
-        re.IGNORECASE,
-    )
-
-    return re.match(regex, url) is not None
-
-
-def is_valid_number(value):
-    try:
-        float(value)
-        return True
-    except ValueError:
-        return False
+from utils import log_message, input_message, is_valid_url, is_valid_number
+from menu_helpers import show_products, get_valid_input
 
 
 def main():
@@ -87,16 +22,14 @@ def main():
 
         if option == "1":
             name = input_message("Product name: ")
-            url = input_message("Product URL: ")
-            while not is_valid_url(url):
-                log_message("Please enter a valid URL.", "error")
-                url = input_message("Product URL: ")
-
-            desired_price = input_message("Desired price: ")
-            while not is_valid_number(desired_price):
-                log_message("Please enter a valid price", "error")
-                desired_price = input_message("Desired price: ")
-            desired_price = float(desired_price)
+            url = get_valid_input(
+                "Product URL: ", is_valid_url, "Please enter a valid URL."
+            )
+            desired_price = float(
+                get_valid_input(
+                    "Desired price: ", is_valid_number, "Please enter a valid number."
+                )
+            )
 
             use_selector = (
                 input_message("Do you want to use a selector? (y/n): ").lower().strip()
@@ -134,12 +67,12 @@ def main():
             updated_prices = tracker.update_prices()
             if updated_prices:
                 log_message(
-                    f"\n{len(updated_prices)} product(s) have reached the desired price! :D",
+                    f"\n{len(updated_prices)} product(s) have reached the desired price! :D\n",
                     "success",
                 )
                 for product in updated_prices:
                     print(
-                        f"- PRODUCT: {product['name']} - NEW CURRENT PRICE: {product['current_price']}"
+                        f"PRODUCT: {product['name']} - NEW CURRENT PRICE: {product['current_price']}"
                     )
             else:
                 log_message("\nNo products have reached the disired price.", "warning")
@@ -147,6 +80,7 @@ def main():
         elif option == "4":
             show_products(tracker)
             products = tracker.load_tracked_products()
+
             if products:
                 product_to_delete = input_message(
                     "\nChoose the number of the product to delete: "
@@ -166,7 +100,7 @@ def main():
 
         elif option == "5":
             print("\nGoodbye!\n")
-            break
+            exit()
 
         else:
             log_message("\n Oops! Please choose a valid option.", "warning")

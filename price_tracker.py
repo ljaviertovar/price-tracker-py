@@ -18,7 +18,8 @@ class PriceTracker:
         '[itemprop="price"]',
         ".price_value",
         ".price-current",
-        ".a-price .a-offscreen",
+        ".a-price",
+        ".a-price",
         "#priceblock_ourprice",
         "#priceblock_dealprice",
         ".andes-money-amout_fraction",
@@ -114,11 +115,9 @@ class PriceTracker:
             # Check if the product is already being tracked
             for product in products:
                 if product["url"] == url:
-                    print(f"already exists: {product}")
                     return False
 
             current_price = self.get_price(url, selector, thousand_separator)
-            print("current price", current_price)
 
             # Check if the price could be obtained
             if current_price is None:
