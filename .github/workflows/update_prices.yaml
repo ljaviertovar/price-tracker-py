@@ -3,6 +3,7 @@ name: Update Prices
 on:
   schedule:
     - cron: '0 18 * * *'
+  workflow_dispatch:
 
 jobs:
   update-prices:
