@@ -2,8 +2,8 @@
     {
         "name": "Ohuhu Markers",
         "url": "https://www.amazon.ca/Ohuhu-Paper-friendly-Water-based-Fineliner-Calligraphy/dp/B0D9M1J46C",
-        "desired_price": 40.0,
-        "current_price": 45.9945,
+        "desired_price": 46.0,
+        "current_price": 41.2141,
         "selector": null,
         "thousand_separator": ",",
         "created_at": "2025-03-28 23:11:21",
@@ -11,6 +11,10 @@
             {
                 "date": "2025-03-28 23:11:21",
                 "price": 45.9945
+            },
+            {
+                "date": "2025-03-30 23:07:49",
+                "price": 41.2141
             }
         ]
     }

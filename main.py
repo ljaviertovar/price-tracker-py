@@ -106,4 +106,5 @@ def main():
             log_message("\n Oops! Please choose a valid option.", "warning")
 
 
-main()
+if __name__ == "__main__":
+    main()
