@@ -1,6 +1,6 @@
-from price_tracker import PriceTracker
-from utils import log_message, input_message, is_valid_url, is_valid_number
-from menu_helpers import show_products, get_valid_input
+from src.price_tracker import PriceTracker
+from src.utils import log_message, input_message, is_valid_url, is_valid_number
+from src.menu_helpers import show_products, get_valid_input
 
 
 def main():
