@@ -10,7 +10,7 @@ with console.status("Updating prices...", spinner="aesthetic"):
 
     updated_prices = tracker.update_prices()
     if updated_prices:
-        message = f"{len(updated_prices)} product(s) have reached the desired price! :D"
+        message = f"{len(updated_prices)} product(s) have reached the desired price! 😁"
         console.log(f"\n[green]{message}[/green]\n")
 
         product_message = message + "\nUPDATED PRODUCTS:\n"
@@ -19,6 +19,6 @@ with console.status("Updating prices...", spinner="aesthetic"):
         print(product_message)
         send_message(product_message)
     else:
-        message = "No products have reached the desired price."
+        message = "No products have reached the desired price. 😕"
         console.log(f"\n[yellow]{message}\n[/yellow]")
         send_message(message)
