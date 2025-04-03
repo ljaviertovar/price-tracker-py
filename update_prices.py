@@ -2,26 +2,23 @@ from price_tracker import PriceTracker
 from price_tracker_bot import send_message
 from rich.console import Console
 
-console = Console()
+console = Console(force_terminal=True)
 
 tracker = PriceTracker()
 
-with console.status("\nUpdating prices...") as staus:
+with console.status("Updating prices...", spinner="aesthetic"):
 
     updated_prices = tracker.update_prices()
     if updated_prices:
-        message = (
-            f"\n{len(updated_prices)} product(s) have reached the desired price! :D\n"
-        )
+        message = f"{len(updated_prices)} product(s) have reached the desired price! :D"
         console.log(f"\n[green]{message}[/green]\n")
-        send_message(message)
 
+        product_message = message + "\nUPDATED PRODUCTS:\n"
         for product in updated_prices:
-            product_message = f"PRODUCT: {product['name']} - NEW CURRENT PRICE: {product['current_price']}"
-            print(product_message)
-            send_message(product_message)
+            product_message += f"{product['name']} - {product['current_price']}\n"
+        print(product_message)
+        send_message(product_message)
     else:
-        message = "\nNo products have reached the desired price.\n"
-        console.log(f"\n[yellow]{message}[/yellow]")
-        print("\nSending message...\n")
+        message = "No products have reached the desired price."
+        console.log(f"\n[yellow]{message}\n[/yellow]")
         send_message(message)

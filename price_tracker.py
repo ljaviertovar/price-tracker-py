@@ -44,18 +44,12 @@ class PriceTracker:
         """Get the price of a product from a given URL"""
         try:
             headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
-                "Accept-Language": "en-US,en;q=0.9,es;q=0.8",
-                "Accept-Encoding": "gzip, deflate, br",
-                "Accept": (
-                    "text/html,application/xhtml+xml,application/xml;q=0.9,"
-                    "image/avif,image/webp,*/*;q=0.8"
-                ),
-                "Referer": "https://www.google.com/",
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36",
+                "Accept-Language": "en-US, en;q=0.5",
             }
 
             response = requests.get(url, headers=headers)
-            # print("Response status: ", response.status_code)
+            print("Response status: ", response.status_code)
 
             if response.status_code != 200:
                 return None
@@ -72,7 +66,7 @@ class PriceTracker:
                     if price_el:
                         break
 
-            # print("Price element: ", price_el)
+            print("Price element: ", price_el)
             if not price_el:
                 return None
 
@@ -154,6 +148,7 @@ class PriceTracker:
             current_price = self.get_price(
                 product["url"], product.get("selector"), thousand_separator
             )
+            print(current_price)
 
             if current_price is not None:
                 product["current_price"] = current_price
@@ -169,6 +164,8 @@ class PriceTracker:
                 # verify if price is equal or low than desired price
                 if current_price <= product["desired_price"]:
                     updated_products.append(product)
+
+        print(updated_products)
 
         if len(updated_products) > 0:
             self.save_tracked_products(products)
