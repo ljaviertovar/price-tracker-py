@@ -5,9 +5,13 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+tracked_products_file = os.path.join(root_dir, "data", "tracked_products.json")
+
 
 class PriceTracker:
-    def __init__(self, tracked_products="tracked_products.json"):
+
+    def __init__(self, tracked_products=tracked_products_file):
         self.tracked_products = tracked_products
 
     common_price_selectors = [
@@ -143,32 +147,29 @@ class PriceTracker:
         products = self.load_tracked_products()
         updated_products = []
 
+        # print(f"products: {products}")
+
         for product in products:
             thousand_separator = product.get("thousand_separator", ",")
             current_price = self.get_price(
                 product["url"], product.get("selector"), thousand_separator
             )
-            print(current_price)
+            print(f"current_price=> {current_price}")
+
+            product["price_history"].append(
+                {
+                    "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "price": current_price,
+                }
+            )
 
             if current_price is not None:
                 product["current_price"] = current_price
-
-                # add to history
-                product["price_history"].append(
-                    {
-                        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        "price": current_price,
-                    }
-                )
-
                 # verify if price is equal or low than desired price
                 if current_price <= product["desired_price"]:
                     updated_products.append(product)
 
-        print(updated_products)
-
-        if len(updated_products) > 0:
-            self.save_tracked_products(products)
+        self.save_tracked_products(products)
 
         return updated_products
 
