@@ -48,8 +48,13 @@ class PriceTracker:
         """Get the price of a product from a given URL"""
         try:
             headers = {
-                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36",
-                "Accept-Language": "en-US, en;q=0.5",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+                "Accept-Language": "en-US, en;q=0.9",
+                "accept": "*/*",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Connection": "keep-alive",
+                "origin": "https://www.amazon.ca",
+                "referer": "https://www.amazon.ca/",
             }
 
             response = requests.get(url, headers=headers)
