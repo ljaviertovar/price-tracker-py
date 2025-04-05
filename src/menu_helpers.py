@@ -1,4 +1,4 @@
-from src.utils import log_message, input_message
+from utils import log_message, input_message
 
 
 def show_products(tracker):

@@ -53,8 +53,8 @@ class PriceTracker:
                 "accept": "*/*",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Connection": "keep-alive",
-                "origin": "https://www.amazon.ca",
-                "referer": "https://www.amazon.ca/",
+                "origin": "https://www.google.com",
+                "referer": "https://www.google.com",
             }
 
             response = requests.get(url, headers=headers)

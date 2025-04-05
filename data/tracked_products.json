@@ -15,6 +15,25 @@
             {
                 "date": "2025-04-05 17:14:09",
                 "price": 45.9945
+            },
+            {
+                "date": "2025-04-05 18:18:23",
+                "price": null
+            }
+        ]
+    },
+    {
+        "name": "GEL-NIMBUS 27",
+        "url": "https://www.asics.com/ca/en-ca/gel-nimbus-27-1011b958-020?option-id=109679",
+        "desired_price": 216.0,
+        "current_price": 215.0,
+        "selector": null,
+        "thousand_separator": ",",
+        "created_at": "2025-04-05 18:30:42",
+        "price_history": [
+            {
+                "date": "2025-04-05 18:30:42",
+                "price": 215.0
             }
         ]
     }
