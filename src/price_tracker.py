@@ -59,7 +59,7 @@ class PriceTracker:
                 return None
 
             soup = BeautifulSoup(response.text, "lxml")
-            # print("Soup: ", soup)
+            print("Soup: ", soup)
 
             price_el = None
             if selector:
@@ -146,7 +146,7 @@ class PriceTracker:
     def update_prices(self):
         """Update tracked products"""
         products = self.load_tracked_products()
-        print(f"load_tracked_products: {products}")
+        print(f"load_tracked_products: {len(products)}")
         updated_products = []
 
         for product in products:
