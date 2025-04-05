@@ -64,7 +64,7 @@ class PriceTracker:
                 return None
 
             soup = BeautifulSoup(response.text, "lxml")
-            print("Soup: ", soup)
+            # print("Soup: ", soup)
 
             price_el = None
             if selector:
