@@ -13,6 +13,6 @@ bot = telebot.TeleBot(TELEGRAM_API_TOKEN)
 def send_message(message):
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
-        print("Message sent successfully.")
+        print("=> Message sent successfully.")
     except telebot.apihelper.ApiTelegramException as e:
         print(f"Error to send message: {e}")

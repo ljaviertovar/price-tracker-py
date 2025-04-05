@@ -6,7 +6,7 @@ console = Console(force_terminal=True)
 
 tracker = PriceTracker()
 
-with console.status("Updating prices...", spinner="aesthetic"):
+with console.status("Updating prices..."):
 
     updated_prices = tracker.update_prices()
     if updated_prices:

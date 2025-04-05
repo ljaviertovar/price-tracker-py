@@ -97,6 +97,7 @@ class PriceTracker:
             with open(self.tracked_products, "w", encoding="utf-8") as file:
                 json.dump(products, file, indent=4)
 
+            print("=> Tracked products saved successfully.")
             return True
         except Exception as e:
             print(f"Error saving tracked products: {e}")
@@ -145,16 +146,15 @@ class PriceTracker:
     def update_prices(self):
         """Update tracked products"""
         products = self.load_tracked_products()
+        print(f"load_tracked_products: {products}")
         updated_products = []
-
-        # print(f"products: {products}")
 
         for product in products:
             thousand_separator = product.get("thousand_separator", ",")
             current_price = self.get_price(
                 product["url"], product.get("selector"), thousand_separator
             )
-            print(f"current_price=> {current_price}")
+            # print(f"current_price=> {current_price}")
 
             product["price_history"].append(
                 {
